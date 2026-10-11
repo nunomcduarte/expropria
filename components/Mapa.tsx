@@ -35,6 +35,14 @@ function Voar({ regiao }: { regiao: Regiao }) {
   return null;
 }
 
+function Seguir({ ponto }: { ponto: [number, number] | null }) {
+  const mapa = useMap();
+  useEffect(() => {
+    if (ponto) mapa.flyTo(ponto, Math.max(mapa.getZoom(), 17), { duration: 0.8 });
+  }, [ponto, mapa]);
+  return null;
+}
+
 function Cliques({ ativo, onClique }: { ativo: boolean; onClique: (lat: number, lng: number) => void }) {
   const mapa = useMapEvents({
     click(e) {
@@ -94,7 +102,20 @@ export default function Mapa({
           </Tooltip>
         </Marker>
       ))}
-      {novoPonto && <Marker position={novoPonto} icon={iconeNovo} />}
+      {aEscolher && <Seguir ponto={novoPonto} />}
+      {novoPonto && (
+        <Marker
+          position={novoPonto}
+          icon={iconeNovo}
+          draggable
+          eventHandlers={{
+            dragend: (e) => {
+              const p = (e.target as L.Marker).getLatLng();
+              onEscolher(p.lat, p.lng);
+            },
+          }}
+        />
+      )}
     </MapContainer>
   );
 }

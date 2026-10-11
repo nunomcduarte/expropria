@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { DISTRITOS, FONTES, TIPOS, TipoFonte, TipoImovel } from "@/lib/tipos";
 import { EscolherFotos, enviarFotos } from "./EnviarFotos";
@@ -8,12 +8,13 @@ import type { FotoPreparada } from "@/lib/desfocar";
 
 type Props = {
   ponto: [number, number] | null;
+  onPonto: (lat: number, lng: number) => void;
   userId: string;
   onCancelar: () => void;
   onCriado: () => void;
 };
 
-export default function FormImovel({ ponto, userId, onCancelar, onCriado }: Props) {
+export default function FormImovel({ ponto, onPonto, userId, onCancelar, onCriado }: Props) {
   const [titulo, setTitulo] = useState("");
   const [tipo, setTipo] = useState<TipoImovel>("centro_trabalho");
   const [descricao, setDescricao] = useState("");
@@ -27,6 +28,10 @@ export default function FormImovel({ ponto, userId, onCancelar, onCriado }: Prop
   const [confirmado, setConfirmado] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const [aEnviar, setAEnviar] = useState(false);
+  const [aProcurar, setAProcurar] = useState(false);
+  const [semResultado, setSemResultado] = useState(false);
+  const daMorada = useRef(false); // o ponto veio da morada escrita: não a sobrescrever
+  const temporizador = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   // Preenche morada, concelho e distrito a partir do ponto escolhido (OpenStreetMap).
   useEffect(() => {
@@ -41,7 +46,8 @@ export default function FormImovel({ ponto, userId, onCancelar, onCriado }: Prop
         const a = d.address ?? {};
         const rua = [a.road, a.house_number].filter(Boolean).join(", ");
         const local = a.city || a.town || a.village || "";
-        setMorada([rua, a.postcode, local].filter(Boolean).join(" · "));
+        if (daMorada.current) daMorada.current = false;
+        else setMorada([rua, a.postcode, local].filter(Boolean).join(" · "));
         setConcelho(a.municipality || a.city || a.town || a.county || "");
         const valores = Object.values(a).map(String);
         const d1 =
@@ -52,6 +58,33 @@ export default function FormImovel({ ponto, userId, onCancelar, onCriado }: Prop
       .catch(() => {});
     return () => ctrl.abort();
   }, [ponto]);
+
+  // Procura a morada escrita e põe o pin no mapa.
+  async function procurar(texto: string) {
+    if (texto.trim().length < 4) return;
+    setAProcurar(true);
+    setSemResultado(false);
+    try {
+      const r = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=pt&accept-language=pt&q=${encodeURIComponent(texto)}`
+      );
+      const d = await r.json();
+      if (d[0]) {
+        daMorada.current = true;
+        onPonto(parseFloat(d[0].lat), parseFloat(d[0].lon));
+      } else setSemResultado(true);
+    } catch {
+      setSemResultado(true);
+    } finally {
+      setAProcurar(false);
+    }
+  }
+
+  function escreverMorada(v: string) {
+    setMorada(v);
+    clearTimeout(temporizador.current);
+    temporizador.current = setTimeout(() => procurar(v), 1200);
+  }
 
   async function submeter(e: React.FormEvent) {
     e.preventDefault();
@@ -97,7 +130,7 @@ export default function FormImovel({ ponto, userId, onCancelar, onCriado }: Prop
       <div className="painel-corpo">
       <h2>Assinalar imóvel</h2>
       <p className={ponto ? "ok" : "dica"}>
-        {ponto ? `Local marcado (${ponto[0].toFixed(5)}, ${ponto[1].toFixed(5)}). Clica no mapa para mudar.` : "Clica no mapa para marcar o local."}
+        {ponto ? "Pin colocado. Arrasta-o ou clica noutro ponto do mapa para ajustar." : "Escreve a morada ou clica no mapa: o pin é colocado automaticamente."}
       </p>
 
       <label>Nome<input required minLength={3} maxLength={120} value={titulo} onChange={(e) => setTitulo(e.target.value)} placeholder="Ex.: Centro de Trabalho de Alcântara" /></label>
@@ -117,7 +150,16 @@ export default function FormImovel({ ponto, userId, onCancelar, onCriado }: Prop
         </label>
         <label>Concelho<input required value={concelho} onChange={(e) => setConcelho(e.target.value)} /></label>
       </div>
-      <label>Morada<input value={morada} onChange={(e) => setMorada(e.target.value)} /></label>
+      <label>Morada
+        <input
+          value={morada}
+          onChange={(e) => escreverMorada(e.target.value)}
+          onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); clearTimeout(temporizador.current); procurar(morada); } }}
+          placeholder="Ex.: Rua Soeiro Pereira Gomes 3, Lisboa"
+        />
+        {aProcurar && <small className="dica">A procurar no mapa…</small>}
+        {semResultado && <small className="dica">Morada não encontrada. Clica no mapa para marcar o local.</small>}
+      </label>
       <label>Descrição<textarea maxLength={2000} rows={3} value={descricao} onChange={(e) => setDescricao(e.target.value)} /></label>
 
       <fieldset>

@@ -162,6 +162,7 @@ export default function Inicio() {
         {aAdicionar && user && (
           <FormImovel
             ponto={ponto}
+            onPonto={(lat, lng) => setPonto([lat, lng])}
             userId={user.id}
             onCancelar={() => { setAAdicionar(false); setPonto(null); }}
             onCriado={() => { setAAdicionar(false); setPonto(null); carregar(); }}
