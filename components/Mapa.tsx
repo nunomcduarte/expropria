@@ -2,7 +2,7 @@
 
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MapContainer, TileLayer, Marker, Tooltip, useMap, useMapEvents } from "react-leaflet";
 import { Imovel, TIPOS } from "@/lib/tipos";
 
@@ -48,6 +48,40 @@ function Cliques({ ativo, onClique }: { ativo: boolean; onClique: (lat: number, 
   return null;
 }
 
+// Fundo do mapa: CARTO por omissão; se os mosaicos falharem (bloqueadores, rede), passa para o OpenStreetMap.
+const FUNDOS = [
+  {
+    url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+  },
+  {
+    url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  },
+];
+
+function Fundo() {
+  const [k, setK] = useState(0);
+  const erros = useRef(0);
+  const fundo = FUNDOS[k];
+  return (
+    <TileLayer
+      key={fundo.url}
+      url={fundo.url}
+      attribution={fundo.attribution}
+      eventHandlers={{
+        tileload: () => { erros.current = 0; },
+        tileerror: () => {
+          if (++erros.current >= 4 && k < FUNDOS.length - 1) {
+            erros.current = 0;
+            setK(k + 1);
+          }
+        },
+      }}
+    />
+  );
+}
+
 export default function Mapa({
   imoveis,
   selecionado,
@@ -67,10 +101,7 @@ export default function Mapa({
 }) {
   return (
     <MapContainer center={REGIOES.continente.centro} zoom={REGIOES.continente.zoom} className="mapa" zoomControl={false}>
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
-        url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-      />
+      <Fundo />
       <Voar regiao={regiao} />
       <Cliques ativo={aEscolher} onClique={onEscolher} />
       {imoveis.map((i) => (
