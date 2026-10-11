@@ -124,7 +124,13 @@ small { color: var(--cinza-texto); display: block; margin-top: 6px; font-size: 0
 .galeria figure:not(:only-child) { flex-basis: 85%; }
 .galeria img { display: block; width: 100%; height: 200px; object-fit: cover; cursor: zoom-in; }
 .galeria figcaption { position: absolute; left: 10px; bottom: 8px; display: flex; gap: 10px; }
-.galeria figcaption .ligacao { color: var(--branco); font-size: 0.72rem; text-shadow: 0 1px 2px #000; }
+.galeria figcaption .google {
+  display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; margin-top: 16px;
+  padding: 12px; background: var(--branco); border: var(--traco);
+  font-family: var(--display); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.04em;
+}
+.ou { margin: 12px 0 0; text-align: center; font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; }
+.ligacao { color: var(--branco); font-size: 0.72rem; text-shadow: 0 1px 2px #000; }
 
 .acoes-bloco { display: flex; border-top: var(--traco); flex-shrink: 0; }
 .acoes-bloco button {
