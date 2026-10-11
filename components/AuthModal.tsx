@@ -24,7 +24,7 @@ export default function AuthModal({ onFechar }: { onFechar: () => void }) {
       const { data, error } = await supabase.auth.signUp({
         email,
         password: senha,
-        options: { data: { nome_publico: nome.trim() } },
+        options: { data: { nome_publico: nome.trim() }, emailRedirectTo: window.location.origin },
       });
       if (error) setErro(error.message);
       else if (data.session) onFechar();
