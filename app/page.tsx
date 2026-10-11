@@ -45,6 +45,15 @@ export default function Inicio() {
     carregar();
   }, [carregar]);
 
+  // /?ficha=<id> (vindo da lista pública) abre logo esse imóvel
+  useEffect(() => {
+    const id = new URLSearchParams(window.location.search).get("ficha");
+    if (!id || aberto) return;
+    const i = imoveis.find((x) => x.id === id);
+    if (i) setAberto(i);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [imoveis]);
+
   const porDistrito = useMemo(
     () => imoveis.filter((i) => !filtroDistrito || i.distrito === filtroDistrito),
     [imoveis, filtroDistrito]
@@ -68,6 +77,7 @@ export default function Inicio() {
 
   const sessao = (
     <nav className="sessao">
+      <Link href="/imoveis">Lista</Link>
       {perfil?.moderador && <Link href="/admin">Denúncias</Link>}
       {user ? (
         <>
@@ -101,6 +111,7 @@ export default function Inicio() {
               assinalados pelo povo
             </span>
           </p>
+          <Link href="/imoveis" className="ligacao-lista">Ver a lista de todos os imóveis →</Link>
           <button className="cta" onClick={comecarAdicionar} disabled={aAdicionar}>
             <span>Assinalar um imóvel</span>
             <Mais />
