@@ -32,6 +32,7 @@ begin
 end $$;
 create trigger ao_registar after insert on auth.users
   for each row execute function criar_perfil();
+revoke execute on function public.criar_perfil() from public, anon, authenticated;
 
 create function e_moderador() returns boolean
 language sql stable security definer set search_path = public as $$
@@ -56,13 +57,15 @@ create table imoveis (
   fonte_nota text not null check (char_length(fonte_nota) >= 10), -- como se sabe que é do partido
   estado estado_moderacao not null default 'aprovado', -- publica logo; 'rejeitado' = removido
   motivo_rejeicao text,
-  criado_por uuid not null default auth.uid() references perfis on delete set null,
+  criado_por uuid default auth.uid() references perfis on delete set null,
   criado_em timestamptz not null default now(),
-  moderado_por uuid references perfis,
+  moderado_por uuid references perfis on delete set null,
   moderado_em timestamptz
 );
 create index on imoveis (estado);
 create index on imoveis (distrito);
+create index on imoveis (criado_por);
+create index on imoveis (moderado_por);
 
 -- ---------- Fotos ----------
 create table fotos (
@@ -72,9 +75,11 @@ create table fotos (
   legenda text check (char_length(legenda) <= 200),
   tirada_da_via_publica boolean not null check (tirada_da_via_publica), -- obrigatório confirmar
   estado estado_moderacao not null default 'aprovado',
-  enviada_por uuid not null default auth.uid() references perfis on delete set null,
+  enviada_por uuid default auth.uid() references perfis on delete set null,
   criada_em timestamptz not null default now()
 );
+create index on fotos (imovel_id);
+create index on fotos (enviada_por);
 
 -- ---------- Denúncias / pedidos de remoção ----------
 create table denuncias (
@@ -83,11 +88,13 @@ create table denuncias (
   foto_id uuid references fotos on delete cascade,
   motivo text not null check (motivo in ('nao_e_do_partido','dados_pessoais','foto_inadequada','duplicado','outro')),
   detalhe text check (char_length(detalhe) <= 1000),
-  contacto text,                          -- opcional, para pedidos de remoção sem conta
+  contacto text check (char_length(contacto) <= 200), -- opcional, para pedidos de remoção sem conta
   resolvida boolean not null default false,
   criada_em timestamptz not null default now(),
   check (imovel_id is not null or foto_id is not null)
 );
+create index on denuncias (imovel_id);
+create index on denuncias (foto_id);
 
 -- ---------- Segurança (RLS) ----------
 alter table perfis    enable row level security;
