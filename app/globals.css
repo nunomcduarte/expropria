@@ -124,13 +124,7 @@ small { color: var(--cinza-texto); display: block; margin-top: 6px; font-size: 0
 .galeria figure:not(:only-child) { flex-basis: 85%; }
 .galeria img { display: block; width: 100%; height: 200px; object-fit: cover; cursor: zoom-in; }
 .galeria figcaption { position: absolute; left: 10px; bottom: 8px; display: flex; gap: 10px; }
-.galeria figcaption .google {
-  display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; margin-top: 16px;
-  padding: 12px; background: var(--branco); border: var(--traco);
-  font-family: var(--display); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.04em;
-}
-.ou { margin: 12px 0 0; text-align: center; font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; }
-.ligacao { color: var(--branco); font-size: 0.72rem; text-shadow: 0 1px 2px #000; }
+.galeria figcaption .ligacao { color: var(--branco); font-size: 0.72rem; text-shadow: 0 1px 2px #000; }
 
 .acoes-bloco { display: flex; border-top: var(--traco); flex-shrink: 0; }
 .acoes-bloco button {
@@ -139,6 +133,18 @@ small { color: var(--cinza-texto); display: block; margin-top: 6px; font-size: 0
 }
 .acoes-bloco button + button { border-left: var(--traco); }
 .acoes-bloco .vermelho { background: var(--vermelho); color: var(--branco); }
+
+.google {
+  display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; margin: 18px 0 0;
+  padding: 12px; background: var(--branco); color: var(--preto); border: var(--traco); box-shadow: 4px 4px 0 var(--vermelho);
+  font-family: var(--display); font-size: 1.2rem; text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer;
+}
+.google:hover, .google:focus-visible { background: var(--preto); color: var(--branco); box-shadow: 4px 4px 0 var(--vermelho); }
+.ou {
+  display: flex; align-items: center; gap: 10px; margin: 18px 0 0; font-size: 0.72rem; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+}
+.ou::before, .ou::after { content: ""; flex: 1; border-top: 2px solid var(--preto); }
 
 .primario, .secundario {
   display: block; width: 100%; margin-top: 16px; padding: 14px; border: 0;
