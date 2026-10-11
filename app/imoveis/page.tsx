@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { supabase, supabaseConfigurado } from "@/lib/supabase";
 import { useSessao } from "@/lib/sessao";
+import AuthModal from "@/components/AuthModal";
+import BarraTopo from "@/components/BarraTopo";
 import { DISTRITOS, Imovel, TIPOS, TipoImovel, numeroFicha } from "@/lib/tipos";
 
 const POR_PAGINA = 12;
@@ -11,7 +13,8 @@ type Ordem = "recentes" | "antigos" | "nome";
 type Vista = "grelha" | "lista";
 
 export default function ListaPublica() {
-  const { user } = useSessao();
+  const { user, perfil } = useSessao();
+  const [login, setLogin] = useState<false | "entrar" | "registar">(false);
   const [imoveis, setImoveis] = useState<Imovel[]>([]);
   const [capas, setCapas] = useState<Record<string, string>>({}); // imovel_id -> URL da 1.ª foto
   const [comFoto, setComFoto] = useState<Set<string>>(new Set());
@@ -139,6 +142,14 @@ export default function ListaPublica() {
   );
 
   return (
+    <div className="pagina">
+    <BarraTopo
+      ativo="lista"
+      logado={!!user}
+      nome={perfil?.nome_publico ?? (user?.user_metadata?.full_name as string | undefined) ?? user?.email?.split("@")[0]}
+      moderador={perfil?.moderador}
+      onEntrar={setLogin}
+    />
     <main className="app lista-app">
       <aside className="cartaz">
         <div className="cartaz-topo">
@@ -264,5 +275,7 @@ export default function ListaPublica() {
         </div>
       )}
     </main>
+    {login && <AuthModal inicial={login} onFechar={() => setLogin(false)} />}
+    </div>
   );
 }
