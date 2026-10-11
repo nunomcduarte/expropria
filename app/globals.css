@@ -518,3 +518,8 @@ button.numero.alerta:hover { background: #c70500; }
   .separadores a.ativo { border-bottom-color: var(--branco); }
   .so-pc { display: none; }
 }
+
+.pagina .lista-app .cartaz { height: calc(100dvh - 80px); align-self: flex-start; }
+@media (max-width: 760px) {
+  .pagina .lista-app .cartaz { display: flex; height: auto; }
+}
