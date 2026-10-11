@@ -17,7 +17,6 @@ export default function FormImovel({ ponto, userId, onCancelar, onCriado }: Prop
   const [titulo, setTitulo] = useState("");
   const [tipo, setTipo] = useState<TipoImovel>("centro_trabalho");
   const [descricao, setDescricao] = useState("");
-  const [entidade, setEntidade] = useState("PCP");
   const [distrito, setDistrito] = useState("");
   const [concelho, setConcelho] = useState("");
   const [morada, setMorada] = useState("");
@@ -67,7 +66,6 @@ export default function FormImovel({ ponto, userId, onCancelar, onCriado }: Prop
           titulo: titulo.trim(),
           tipo,
           descricao: descricao.trim() || null,
-          entidade_proprietaria: entidade.trim() || "PCP",
           distrito,
           concelho: concelho.trim(),
           morada: morada.trim() || null,
@@ -109,7 +107,6 @@ export default function FormImovel({ ponto, userId, onCancelar, onCriado }: Prop
             {Object.entries(TIPOS).map(([k, v]) => <option key={k} value={k}>{v.nome}</option>)}
           </select>
         </label>
-        <label>Proprietário<input value={entidade} onChange={(e) => setEntidade(e.target.value)} /></label>
       </div>
       <div className="linha">
         <label>Distrito
