@@ -7,6 +7,7 @@ import { supabase, supabaseConfigurado } from "@/lib/supabase";
 import { useSessao } from "@/lib/sessao";
 import { DISTRITOS, Imovel, TIPOS, TipoImovel } from "@/lib/tipos";
 import AuthModal from "@/components/AuthModal";
+import BarraTopo from "@/components/BarraTopo";
 import FormImovel from "@/components/FormImovel";
 import Ficha from "@/components/Ficha";
 import type { Regiao } from "@/components/Mapa";
@@ -34,7 +35,7 @@ export default function Inicio() {
   const [aberto, setAberto] = useState<Imovel | null>(null);
   const [aAdicionar, setAAdicionar] = useState(false);
   const [ponto, setPonto] = useState<[number, number] | null>(null);
-  const [login, setLogin] = useState(false);
+  const [login, setLogin] = useState<false | "entrar" | "registar">(false);
 
   const carregar = useCallback(async () => {
     if (!supabaseConfigurado) return;
@@ -69,33 +70,25 @@ export default function Inicio() {
   }, [porDistrito]);
 
   function comecarAdicionar() {
-    if (!user) return setLogin(true);
+    if (!user) return setLogin("entrar");
     setAberto(null);
     setPonto(null);
     setAAdicionar(true);
   }
 
-  const sessao = (
-    <nav className="sessao">
-      <Link href="/imoveis">Lista</Link>
-      {perfil?.moderador && <Link href="/admin">Denúncias</Link>}
-      {user ? (
-        <>
-          <span className="quem">{perfil?.nome_publico}</span>
-          <button onClick={() => supabase.auth.signOut()}>Sair</button>
-        </>
-      ) : (
-        <button onClick={() => setLogin(true)}>Entrar →</button>
-      )}
-    </nav>
-  );
-
   return (
+    <div className="pagina">
+    <BarraTopo
+      ativo="mapa"
+      logado={!!user}
+      nome={perfil?.nome_publico}
+      moderador={perfil?.moderador}
+      onEntrar={setLogin}
+    />
     <main className="app">
       <aside className="cartaz">
         <div className="cartaz-topo">
           <span className="rotulo">Inventário popular · Nº 001</span>
-          {sessao}
         </div>
         <h1 className="titulo">
           <span>Expro<span className="hifen">-</span></span>
@@ -188,12 +181,13 @@ export default function Inicio() {
             moderador={Boolean(perfil?.moderador)}
             onFechar={() => setAberto(null)}
             onRemovido={() => { setAberto(null); carregar(); }}
-            onPedirLogin={() => setLogin(true)}
+            onPedirLogin={() => setLogin("entrar")}
           />
         )}
       </section>
 
-      {login && <AuthModal onFechar={() => setLogin(false)} />}
+      {login && <AuthModal inicial={login} onFechar={() => setLogin(false)} />}
     </main>
+    </div>
   );
 }

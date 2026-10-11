@@ -474,3 +474,47 @@ button.numero.alerta:hover { background: #c70500; }
   .c-tipo { right: 8px; }
 }
 @media (min-width: 761px) { .f-fundo { display: none; } }
+
+/* ---------- barra do topo ---------- */
+.pagina { height: 100dvh; display: flex; flex-direction: column; }
+.pagina .app { height: auto; flex: 1; min-height: 0; }
+.barra-topo {
+  flex-shrink: 0; display: flex; align-items: center; gap: 12px; padding: 0 56px; min-height: 76px;
+  background: var(--preto); color: var(--branco); border-bottom: 4px solid var(--vermelho);
+}
+.marca {
+  display: flex; align-items: center; gap: 12px; margin-right: auto; color: var(--branco); text-decoration: none;
+  font-family: var(--display); font-size: 30px; line-height: 1; text-transform: uppercase; letter-spacing: 0.01em;
+}
+.marca span { background: var(--vermelho); color: var(--preto); padding: 3px 8px 0; }
+.separadores { display: flex; align-items: center; gap: 4px; }
+.separadores a {
+  display: block; padding: 24px 20px 20px; border-bottom: 4px solid transparent; color: var(--branco); text-decoration: none;
+  font-family: var(--display); font-size: 20px; line-height: 24px; letter-spacing: 0.06em; text-transform: uppercase;
+}
+.separadores a.ativo { border-bottom-color: var(--vermelho); }
+.separadores a:hover, .separadores a:focus-visible { background: #1a1a1a; }
+.conta { display: flex; align-items: center; gap: 12px; padding-left: 20px; margin-left: 8px; border-left: 3px solid #444; }
+.conta-nome { color: #ccc; font-size: 0.85rem; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bt-entrar, .bt-registar {
+  width: auto; padding: 12px 26px; border: 3px solid var(--branco); border-radius: 0; background: none; color: var(--branco);
+  font-family: var(--display); font-size: 20px; line-height: 24px; letter-spacing: 0.06em; text-transform: uppercase;
+}
+.bt-registar { background: var(--vermelho); border-color: var(--vermelho); }
+.bt-entrar:hover { background: var(--branco); color: var(--preto); }
+.bt-registar:hover { background: #fff; border-color: #fff; color: var(--vermelho); }
+.pagina .cartaz-topo { display: none; }
+@media (max-width: 1100px) { .barra-topo { padding: 0 24px; } }
+@media (max-width: 760px) {
+  .pagina .cartaz { display: none; }
+  .barra-topo { flex-wrap: wrap; padding: 0; gap: 0; background: var(--vermelho); border-bottom: 0; }
+  .marca { color: var(--branco); font-size: 30px; padding: 14px 16px; }
+  .marca span { background: var(--preto); color: var(--vermelho); }
+  .conta { order: 2; border: 0; margin: 0; padding: 0 16px 0 0; }
+  .conta-nome, .bt-registar { display: none; }
+  .bt-entrar { background: var(--branco); color: var(--preto); border-color: var(--branco); padding: 10px 16px; font-size: 18px; }
+  .separadores { order: 3; width: 100%; gap: 0; background: var(--preto); }
+  .separadores a { flex: 1; text-align: center; padding: 14px 8px 10px; }
+  .separadores a.ativo { border-bottom-color: var(--branco); }
+  .so-pc { display: none; }
+}

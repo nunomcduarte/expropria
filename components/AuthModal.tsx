@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 
-export default function AuthModal({ onFechar }: { onFechar: () => void }) {
-  const [modo, setModo] = useState<"entrar" | "registar">("entrar");
+export default function AuthModal({ onFechar, inicial = "entrar" }: { onFechar: () => void; inicial?: "entrar" | "registar" }) {
+  const [modo, setModo] = useState<"entrar" | "registar">(inicial);
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [nome, setNome] = useState("");
