@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { FONTES, Foto, Imovel, MOTIVOS_DENUNCIA, TIPOS, numeroFicha } from "@/lib/tipos";
 import { EscolherFotos, enviarFotos } from "./EnviarFotos";
-import type { FotoPreparada } from "@/lib/desfocar";
+import type { FotoPreparada } from "@/lib/fotos";
 
 type Props = {
   imovel: Imovel;
@@ -111,16 +111,15 @@ export default function Ficha({ imovel, userId, moderador, onFechar, onRemovido,
 
 function AdicionarFotos({ imovelId, userId, onFeito }: { imovelId: string; userId: string; onFeito: () => void }) {
   const [ficheiros, setFicheiros] = useState<FotoPreparada[]>([]);
-  const [confirmado, setConfirmado] = useState(false);
   const [aEnviar, setAEnviar] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   return (
     <div>
-      <EscolherFotos ficheiros={ficheiros} setFicheiros={setFicheiros} confirmado={confirmado} setConfirmado={setConfirmado} />
+      <EscolherFotos ficheiros={ficheiros} setFicheiros={setFicheiros} />
       {erro && <p className="erro">{erro}</p>}
       <button
         className="primario"
-        disabled={!ficheiros.length || !confirmado || aEnviar}
+        disabled={!ficheiros.length || aEnviar}
         onClick={async () => {
           setAEnviar(true);
           try {

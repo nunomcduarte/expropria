@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { DISTRITOS, FONTES, TIPOS, TipoFonte, TipoImovel } from "@/lib/tipos";
 import { EscolherFotos, enviarFotos } from "./EnviarFotos";
-import type { FotoPreparada } from "@/lib/desfocar";
+import type { FotoPreparada } from "@/lib/fotos";
 
 type Props = {
   ponto: [number, number] | null;
@@ -25,7 +25,6 @@ export default function FormImovel({ ponto, onPonto, userId, onCancelar, onCriad
   const [fonteUrl, setFonteUrl] = useState("");
   const [fonteNota, setFonteNota] = useState("");
   const [ficheiros, setFicheiros] = useState<FotoPreparada[]>([]);
-  const [confirmado, setConfirmado] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const [aEnviar, setAEnviar] = useState(false);
   const [aProcurar, setAProcurar] = useState(false);
@@ -89,7 +88,6 @@ export default function FormImovel({ ponto, onPonto, userId, onCancelar, onCriad
   async function submeter(e: React.FormEvent) {
     e.preventDefault();
     if (!ponto) return setErro("Escolhe primeiro o local no mapa.");
-    if (ficheiros.length && !confirmado) return setErro("Confirma que as fotos foram tiradas da via pública.");
     setErro(null);
     setAEnviar(true);
     try {
@@ -173,7 +171,7 @@ export default function FormImovel({ ponto, onPonto, userId, onCancelar, onCriad
         <label>Explicação<textarea required minLength={10} rows={2} value={fonteNota} onChange={(e) => setFonteNota(e.target.value)} placeholder="Ex.: consta do anexo de imóveis das contas de 2024, pág. 37" /></label>
       </fieldset>
 
-      <EscolherFotos ficheiros={ficheiros} setFicheiros={setFicheiros} confirmado={confirmado} setConfirmado={setConfirmado} />
+      <EscolherFotos ficheiros={ficheiros} setFicheiros={setFicheiros} />
 
       {erro && <p className="erro">{erro}</p>}
       </div>

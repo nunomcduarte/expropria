@@ -349,19 +349,3 @@ button.numero.alerta:hover { background: #c70500; }
   .linha { grid-template-columns: 1fr; gap: 0; }
 }
 
-/* ---------- fotos: desfocar ---------- */
-.miniatura { position: relative; padding: 0; border: 0; background: none; }
-.miniatura span {
-  position: absolute; left: 2px; right: 2px; bottom: 2px; background: var(--preto); color: var(--branco);
-  font-size: 0.6rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 0;
-}
-.fotos-campo .ok { margin-top: 8px; }
-.caixa.editor { max-width: 760px; }
-.editor-area { position: relative; margin: 12px auto 0; touch-action: none; user-select: none; cursor: crosshair; border: 2px solid var(--preto); }
-.editor-area img { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
-.zona { position: absolute; border: 2px solid var(--vermelho); background: transparent; padding: 0; cursor: pointer; }
-.zona.mao { border-style: solid; }
-.zona.cara, .zona.pessoa { border-style: dashed; }
-.zona.a-desenhar { background: rgba(225, 6, 0, 0.2); pointer-events: none; }
-.editor-acoes { display: flex; gap: 10px; margin-top: 12px; }
-.editor-acoes button { margin: 0; flex: 1; }
