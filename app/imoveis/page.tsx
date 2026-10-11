@@ -146,7 +146,7 @@ export default function ListaPublica() {
     <BarraTopo
       ativo="lista"
       logado={!!user}
-      nome={perfil?.nome_publico}
+      nome={perfil?.nome_publico ?? (user?.user_metadata?.full_name as string | undefined) ?? user?.email?.split("@")[0]}
       moderador={perfil?.moderador}
       onEntrar={setLogin}
     />

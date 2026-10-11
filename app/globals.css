@@ -495,7 +495,9 @@ button.numero.alerta:hover { background: #c70500; }
 .separadores a.ativo { border-bottom-color: var(--vermelho); }
 .separadores a:hover, .separadores a:focus-visible { background: #1a1a1a; }
 .conta { display: flex; align-items: center; gap: 12px; padding-left: 20px; margin-left: 8px; border-left: 3px solid #444; }
-.conta-nome { color: #ccc; font-size: 0.85rem; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.conta-ola { display: flex; align-items: center; gap: 10px; color: var(--branco); }
+.conta-ola svg { fill: var(--vermelho); flex-shrink: 0; }
+.conta-nome { font-size: 0.85rem; font-weight: 600; max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .bt-entrar, .bt-registar {
   width: auto; padding: 12px 26px; border: 3px solid var(--branco); border-radius: 0; background: none; color: var(--branco);
   font-family: var(--display); font-size: 20px; line-height: 24px; letter-spacing: 0.06em; text-transform: uppercase;
@@ -512,6 +514,7 @@ button.numero.alerta:hover { background: #c70500; }
   .marca span { background: var(--preto); color: var(--vermelho); }
   .conta { order: 2; border: 0; margin: 0; padding: 0 16px 0 0; }
   .conta-nome, .bt-registar { display: none; }
+  .conta-ola svg { fill: var(--branco); }
   .bt-entrar { background: var(--branco); color: var(--preto); border-color: var(--branco); padding: 10px 16px; font-size: 18px; }
   .separadores { order: 3; width: 100%; gap: 0; background: var(--preto); }
   .separadores a { flex: 1; text-align: center; padding: 14px 8px 10px; }

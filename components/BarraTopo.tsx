@@ -29,7 +29,13 @@ export default function BarraTopo({ ativo, logado, nome, moderador, onEntrar }: 
       <div className="conta">
         {logado ? (
           <>
-            {nome && <span className="conta-nome">{nome}</span>}
+            <span className="conta-ola" title={nome ? `Bem-vindo, camarada ${nome}` : "Bem-vindo, camarada"}>
+              <svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="8" r="4.5" />
+                <path d="M3 22c0-5 4-8 9-8s9 3 9 8z" />
+              </svg>
+              <span className="conta-nome">Bem-vindo, camarada{nome ? ` ${nome}` : ""}</span>
+            </span>
             <button className="bt-entrar" onClick={() => supabase.auth.signOut()}>Sair</button>
           </>
         ) : (
